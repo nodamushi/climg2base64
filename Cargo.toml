@@ -1,0 +1,9 @@
+[package]
+name = "climg2base64"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+arboard = "3.4.1"
+base64 = "0.22.1"
+image = { version = "0.25.4", features=["avif", "bmp", "png", "gif", "jpeg", "webp"]}
