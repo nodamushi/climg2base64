@@ -6,4 +6,6 @@ edition = "2021"
 [dependencies]
 arboard = "3.4.1"
 base64 = "0.22.1"
+clap = { version = "4.5.20", features = ["derive"] }
+clipboard-files = "0.1.1"
 image = { version = "0.25.4", features=["avif", "bmp", "png", "gif", "jpeg", "webp"]}
