@@ -11,6 +11,16 @@ use base64::Engine;
 use clap::Parser;
 use image::{imageops::FilterType, DynamicImage, ImageBuffer, ImageFormat, Rgb, Rgba};
 
+//----------------------------------------
+// Exit code
+//----------------------------------------
+const INVALID_FORMAT_ERROR: i32 = 1;
+const NO_IMAGE_ERROR: i32 = 2;
+const FAIL_TO_CREATE_IMAGE_ERROR: i32 = 3;
+const CLIPBOARD_ERROR: i32 = 3;
+//----------------------------------------
+
+
 /// Clipboard image to base64
 #[derive(clap::Parser, Debug)]
 #[command(version, about, long_about = None, disable_help_flag = true)]
@@ -85,7 +95,7 @@ impl Arg {
 macro_rules! clipboard_empty {
     () => {
         eprintln!("Clipboad has no image.");
-        exit(2)
+        exit(NO_IMAGE_ERROR)
     };
 }
 
@@ -119,7 +129,7 @@ fn to_binary(width: u32, height: u32, rgba: &[u8], arg: &Arg) -> Vec<u8> {
     } else {
         eprintln!("Invalid format name '{}'", arg.format);
         print_formats();
-        exit(1)
+        exit(INVALID_FORMAT_ERROR)
     };
 
     let (data, color) = if img_fmt == ImageFormat::Jpeg {
@@ -156,7 +166,7 @@ fn to_binary(width: u32, height: u32, rgba: &[u8], arg: &Arg) -> Vec<u8> {
                     Ok(()) => return buffer.into_inner(),
                     Err(e) => {
                         eprintln!("Fail to create image binary: {}", e);
-                        exit(2)
+                        exit(FAIL_TO_CREATE_IMAGE_ERROR)
                     }
                 }
             } // (ignore error)?
@@ -167,7 +177,7 @@ fn to_binary(width: u32, height: u32, rgba: &[u8], arg: &Arg) -> Vec<u8> {
                     Ok(()) => return buffer.into_inner(),
                     Err(e) => {
                         eprintln!("Fail to create image binary: {}", e);
-                        exit(2)
+                        exit(FAIL_TO_CREATE_IMAGE_ERROR)
                     }
                 }
             } // (ignore error)?
@@ -178,7 +188,7 @@ fn to_binary(width: u32, height: u32, rgba: &[u8], arg: &Arg) -> Vec<u8> {
         image::write_buffer_with_format(&mut buffer, data.as_ref(), width, height, color, img_fmt)
     {
         eprintln!("Fail to create image: {}", e);
-        exit(2)
+        exit(FAIL_TO_CREATE_IMAGE_ERROR)
     }
     buffer.into_inner()
 }
@@ -192,7 +202,7 @@ fn dynimg_to_vec(image: DynamicImage, save_fmt: ImageFormat) -> Vec<u8> {
                 Ok(()) => return c.into_inner(),
                 Err(e) => {
                     eprintln!("Fail to create image binary: {}", e);
-                    exit(2)
+                    exit(FAIL_TO_CREATE_IMAGE_ERROR)
                 }
             }
         }
@@ -201,7 +211,7 @@ fn dynimg_to_vec(image: DynamicImage, save_fmt: ImageFormat) -> Vec<u8> {
         Ok(()) => return c.into_inner(),
         Err(e) => {
             eprintln!("Fail to create image binary: {}", e);
-            exit(2)
+            exit(FAIL_TO_CREATE_IMAGE_ERROR)
         }
     }
 }
@@ -251,7 +261,7 @@ fn main() {
             Ok(x) => x,
             Err(e) => {
                 eprintln!("Fail to init clipboard. {}", e);
-                exit(2)
+                exit(CLIPBOARD_ERROR)
             }
         };
 
