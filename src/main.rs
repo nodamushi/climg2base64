@@ -28,6 +28,10 @@ struct Arg {
     #[arg(long, action = clap::ArgAction::SetTrue)]
     ignore_format: bool,
 
+    /// Output the clipboard file path to the stderr.
+    #[arg(long, action = clap::ArgAction::SetTrue)]
+    stderr_path: bool,
+
     /// Show help message
     #[arg(long, action = clap::ArgAction::Help)]
     help: Option<bool>,
@@ -179,7 +183,6 @@ fn to_binary(width: u32, height: u32, rgba: &[u8], arg: &Arg) -> Vec<u8> {
     buffer.into_inner()
 }
 
-
 fn dynimg_to_vec(image: DynamicImage, save_fmt: ImageFormat) -> Vec<u8> {
     let mut c = Cursor::new(Vec::new());
     if save_fmt == ImageFormat::Jpeg {
@@ -225,7 +228,6 @@ fn read_image_file(p: &Path, arg: &Arg) -> Vec<u8> {
         get_format(&arg.format).unwrap_or(img_fmt)
     };
 
-
     if let Ok(img) = image::load_from_memory(&buf) {
         let (w, h, _, r) = arg.get_image_width(img.width(), img.height());
         if r {
@@ -269,6 +271,8 @@ fn main() {
 
     println!("{}", base64::prelude::BASE64_STANDARD.encode(binary));
     if let Some(path) = path {
-        eprintln!("{}", path.display());
+        if arg.stderr_path {
+            eprintln!("{}", path.display());
+        }
     }
 }

@@ -2,6 +2,7 @@
 name = "climg2base64"
 version = "0.1.0"
 edition = "2021"
+license = "Unlicense OR MIT"
 
 [dependencies]
 arboard = "3.4.1"
