@@ -285,7 +285,7 @@ fn main() {
             let (rgba, width, height) = (img.bytes.as_ref(), img.width as u32, img.height as u32);
             (to_binary(width, height, rgba, &arg), None)
         } else if let Some(file) = get_clipboard_first_file() {
-            (read_image_file(&file, &arg), Some(file.clone()))
+            (read_image_file(&file, &arg), Some(file))
         } else {
             clipboard_empty!();
         }
