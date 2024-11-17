@@ -1,3 +1,4 @@
+use std::path::PathBuf;
 use std::{
     borrow::Cow,
     fs,
@@ -253,6 +254,21 @@ fn read_image_file(p: &Path, arg: &Arg) -> Vec<u8> {
     buf
 }
 
+#[cfg(not(feature = "file"))]
+fn get_clipboard_first_file() -> Option<PathBuf> {
+    None
+}
+
+#[cfg(feature = "file")]
+fn get_clipboard_first_file() -> Option<PathBuf> {
+    if let Ok(files) = clipboard_files::read() {
+        if !files.is_empty() {
+            return Some(files[0].clone());
+        }
+    }
+    None
+}
+
 fn main() {
     let arg = Arg::parse();
 
@@ -268,12 +284,8 @@ fn main() {
         if let Ok(img) = clipboad.get_image() {
             let (rgba, width, height) = (img.bytes.as_ref(), img.width as u32, img.height as u32);
             (to_binary(width, height, rgba, &arg), None)
-        } else if let Ok(files) = clipboard_files::read() {
-            if !files.is_empty() {
-                (read_image_file(&files[0], &arg), Some(files[0].clone()))
-            } else {
-                clipboard_empty!();
-            }
+        } else if let Some(file) = get_clipboard_first_file() {
+            (read_image_file(&file, &arg), Some(file.clone()))
         } else {
             clipboard_empty!();
         }

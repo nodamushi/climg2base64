@@ -16,15 +16,16 @@ climg2base64 <FORMAT> [OPTION]
 ## How to build
 
 ```sh
-cargo build --release
+cargo build --release --features "file"
 ```
 
 or
 
 ```sh
-cargo install --git https://github.com/nodamushi/climg2base64
+cargo install --git https://github.com/nodamushi/climg2base64 --features "file"
 ```
 
+Note: Please remove the features option on Ubuntu 20.04.
 
 ### Ubuntu Required Package
 
@@ -41,3 +42,5 @@ I would be very grateful if someone could help me.
 ## License
 
 This project is licensed under either the MIT License or the Unlicense, at your option.
+
+
