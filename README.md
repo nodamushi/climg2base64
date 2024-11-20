@@ -33,11 +33,19 @@ Note: Please remove the features option on Ubuntu 20.04.
 sudo apt install libgtk-3-dev libglib2.0-dev
 ```
 
-### Help me 😭
+### Cross build
 
-I want to build this project for multiple platforms and provide the binaries, but as I'm a beginner with Rust, I'm not sure how to do it.
+Create Podman image for build this repository.
 
-I would be very grateful if someone could help me.
+```sh
+./podman-image-build.sh
+```
+
+Run `build.sh` . `output` directory will be created.
+
+```sh
+./build.sh
+```
 
 ## License
 
