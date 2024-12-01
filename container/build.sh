@@ -41,12 +41,12 @@ build() {
       tmpdir=${build_dir}/${build_target}
       outdir=$output/${save_dirname}
     else
-      tmpdir=${build_dir}/${build_target}/no_file
-      outdir=$output/${save_dirname}/no_file
+      tmpdir=${build_dir}/${build_target}/file
+      outdir=$output/${save_dirname}/file
     fi
   else
-    tmpdir=${build_dir}/${build_target}/file
-    outdir=$output/${save_dirname}/file
+    tmpdir=${build_dir}/${build_target}/no_file
+    outdir=$output/${save_dirname}/no_file
   fi
 
   envvar=("CARGO_TARGET_DIR=$tmpdir" "CARGO_HOME=${build_dir}/.cargo")
