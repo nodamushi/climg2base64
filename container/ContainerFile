@@ -15,6 +15,6 @@ RUN rustup target add \
       x86_64-unknown-linux-gnu \
       x86_64-pc-windows-gnu
 
-COPY --chmod=755 ./build.sh /build.sh
-
+# /build.sh will be mounted by ../build.sh
+# /build.sh = ./build.sh
 ENTRYPOINT [ "/build.sh" ]
