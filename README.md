@@ -52,3 +52,8 @@ Run `build.sh` . `output` directory will be created.
 This project is licensed under either the MIT License or the Unlicense, at your option.
 
 
+## History
+
+- v0.1.1: Fix #2
+  - If PNG clipboard data is exists on Windows, use it.
+- v0.1.0: first release

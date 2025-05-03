@@ -1,15 +1,18 @@
 [package]
 name = "climg2base64"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 license = "Unlicense OR MIT"
 
 [dependencies]
-arboard = "3.4.1"
+arboard = "3.5.0"
 base64 = "0.22.1"
 clap = { version = "4.5.20", features = ["derive"] }
 image = { version = "0.25.4", features=["avif", "bmp", "png", "gif", "jpeg", "webp"]}
 clipboard-files = { version = "0.1.1", optional = true }
+
+[target.'cfg(windows)'.dependencies]
+clipboard-win = "5.4.0"
 
 [features]
 default = []
