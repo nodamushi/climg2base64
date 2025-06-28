@@ -73,6 +73,13 @@ build() {
   $pack_cmd "${pack_arg[@]}"
   # MD5
   md5sum $pack > md5.txt
+
+  if [ $os -eq $WIN ];then
+    pack=climg2base64-${save_name}.tar.gz
+    tar -zcf $pack $exec
+    # MD5
+    md5sum $pack > md5_tar.gz.txt
+  fi
 }
 
 #  x86_64-unknown-linux-gnu
