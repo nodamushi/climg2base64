@@ -269,60 +269,8 @@ fn get_clipboard_first_file() -> Option<PathBuf> {
     None
 }
 
-#[cfg(windows)]
-fn get_png(arg: &Arg) -> Option<Vec<u8>> {
-    let Ok(_clip) = clipboard_win::Clipboard::new() else {
-        eprintln!("Fail to open clipboard");
-        exit(1);
-    };
-
-    let Some(png) = clipboard_win::raw::register_format("PNG") else {
-        return None;
-    };
-
-    if !clipboard_win::is_format_avail(png.into()) {
-        return None;
-    }
-    let mut data = Vec::new();
-
-    if let Err(e) = clipboard_win::raw::get_vec(png.into(), &mut data) {
-        return None;
-    }
-
-
-    let img_fmt = ImageFormat::Png;
-    let save_fmt = if arg.ignore_format {
-        img_fmt
-    } else {
-        get_format(&arg.format).unwrap_or(img_fmt)
-    };
-
-    if let Ok(img) = image::load_from_memory(&data) {
-        let (w, h, _, r) = arg.get_image_width(img.width(), img.height());
-        if r {
-            let resized = img.resize(w, h, FilterType::Gaussian);
-            return Some(dynimg_to_vec(resized, save_fmt));
-        }
-        if img_fmt != save_fmt {
-            return Some(dynimg_to_vec(img, save_fmt));
-        } else{
-            return Some(data)
-        }
-    } else {
-        return None;
-    }
-}
-
 fn main() {
     let arg = Arg::parse();
-
-    #[cfg(windows)]
-    // See issue #2
-    if let Some(binary) = get_png(&arg) {
-        println!("{}", base64::prelude::BASE64_STANDARD.encode(binary));
-        return;
-    }
-
 
     let (binary, path) = {
         let mut clipboad = match Clipboard::new() {
