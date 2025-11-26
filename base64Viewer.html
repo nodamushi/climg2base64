@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Base64 Image Viewer with Background Switcher</title>
+  <style>
+    /* デフォルトの市松模様 */
+    body {
+      margin: 0;
+      padding: 20px;
+      font-family: sans-serif;
+      background-color: #f0f0f0;
+      background-image:
+        linear-gradient(45deg, #ddd 25%, transparent 25%),
+        linear-gradient(-45deg, #ddd 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, #ddd 75%),
+        linear-gradient(-45deg, transparent 75%, #ddd 75%);
+      background-size: 20px 20px;
+      background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+    }
+
+    /* 背景色切り替え用クラス */
+    body.bg-white { background: #ffffff; }
+    body.bg-black { background: #000000; color: #fff; }
+    body.bg-red   { background: #ff0000; }
+    body.bg-green { background: #00ff00; }
+    body.bg-blue  { background: #0000ff; color: #fff; }
+
+    .controls {
+      margin-bottom: 15px;
+      padding: 10px;
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      display: inline-block;
+    }
+
+    label {
+      margin-right: 15px;
+      cursor: pointer;
+      font-weight: bold;
+      color: #333;
+    }
+
+    textarea {
+      width: 100%;
+      height: 150px;
+      font-family: monospace;
+      margin-bottom: 20px;
+    }
+
+    img {
+      max-width: 100%;
+      margin-top: 20px;
+      border: 1px solid #ccc;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <h1>Base64 Image Viewer</h1>
+
+  <div class="controls">
+    背景色:
+    <label><input type="radio" name="bg" value="" checked> 市松模様</label>
+    <label><input type="radio" name="bg" value="bg-white"> 白</label>
+    <label><input type="radio" name="bg" value="bg-black"> 黒</label>
+    <label><input type="radio" name="bg" value="bg-red"> 赤</label>
+    <label><input type="radio" name="bg" value="bg-green"> 緑</label>
+    <label><input type="radio" name="bg" value="bg-blue"> 青</label>
+  </div>
+
+  <textarea id="base64Input" placeholder="Paste base64 string here..."></textarea>
+  <div id="imageContainer"></div>
+
+  <script>
+    const input = document.getElementById('base64Input');
+    const container = document.getElementById('imageContainer');
+    const radios = document.querySelectorAll('input[name="bg"]');
+    const update = () => {
+      const base64 = input.value.trim();
+      if (!base64) {
+        container.innerHTML = '';
+        return;
+      }
+
+      const img = document.createElement('img');
+      img.src = `data:image/*;base64,${base64}`;
+
+      img.onerror = () => {
+        container.innerHTML = '<p style="color:red; background:white;">Invalid base64 image</p>';
+      };
+
+      container.innerHTML = '';
+      container.appendChild(img);
+    };
+
+    input.addEventListener('input', update);
+    update();
+
+    // 背景切り替え処理
+    radios.forEach(radio => {
+      radio.addEventListener('change', (e) => {
+        document.body.className = e.target.value;
+      });
+    });
+  </script>
+</body>
+</html>
