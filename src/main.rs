@@ -18,7 +18,7 @@ use image::{imageops::FilterType, DynamicImage, ImageBuffer, ImageFormat, Rgb, R
 const INVALID_FORMAT_ERROR: i32 = 1;
 const NO_IMAGE_ERROR: i32 = 2;
 const FAIL_TO_CREATE_IMAGE_ERROR: i32 = 3;
-const CLIPBOARD_ERROR: i32 = 3;
+const CLIPBOARD_ERROR: i32 = 4;
 //----------------------------------------
 
 
