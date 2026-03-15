@@ -10,7 +10,7 @@ use std::{
 use arboard::Clipboard;
 use base64::Engine;
 use clap::Parser;
-use image::{imageops::FilterType, DynamicImage, ImageBuffer, ImageFormat, Rgb, Rgba};
+use image::{DynamicImage, ImageBuffer, ImageFormat, Rgb, Rgba, imageops::FilterType};
 
 //----------------------------------------
 // Exit code
@@ -20,7 +20,6 @@ const NO_IMAGE_ERROR: i32 = 2;
 const FAIL_TO_CREATE_IMAGE_ERROR: i32 = 3;
 const CLIPBOARD_ERROR: i32 = 4;
 //----------------------------------------
-
 
 /// Clipboard image to base64
 #[derive(clap::Parser, Debug)]
