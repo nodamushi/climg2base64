@@ -35,17 +35,13 @@ sudo apt install libgtk-3-dev libglib2.0-dev
 
 ### Cross build
 
-Create Podman image for build this repository.
+Pre-built binaries for each platform are provided via GitHub Actions releases.
 
-```sh
-./podman-image-build.sh
-```
+The following platforms are supported:
 
-Run `build.sh` . `output` directory will be created.
-
-```sh
-./build.sh
-```
+- Linux (x86_64, aarch64)
+- Windows (x86_64, aarch64)
+- macOS (aarch64)
 
 ## License
 
@@ -54,6 +50,11 @@ This project is licensed under either the MIT License or the Unlicense, at your 
 
 ## History
 
+- v0.3.0
+  - Fix exit code: clipboard initialization failure now returns code 4 (was 3, duplicate of image creation failure)
+  - Library updates
+- v0.2.0
+  - Add pre-built binaries via GitHub Actions for Linux (x86_64, aarch64), Windows (x86_64, aarch64), macOS (aarch64)
 - v0.1.1: Fix #2
   - If PNG clipboard data is exists on Windows, use it.
 - v0.1.0: first release
