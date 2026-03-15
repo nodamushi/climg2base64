@@ -1,0 +1,104 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build-linux-x86_64:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install system dependencies
+        run: sudo apt-get update && sudo apt-get install -y libgtk-3-dev libglib2.0-dev
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - name: Build
+        run: cargo build --release --features file
+      - name: Archive
+        run: tar -czf climg2base64-linux-x86_64.tar.gz -C target/release climg2base64
+      - uses: actions/upload-artifact@v4
+        with:
+          name: climg2base64-linux-x86_64
+          path: climg2base64-linux-x86_64.tar.gz
+
+  build-linux-aarch64:
+    runs-on: ubuntu-24.04-arm
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install system dependencies
+        run: sudo apt-get update && sudo apt-get install -y libgtk-3-dev libglib2.0-dev
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - name: Build
+        run: cargo build --release --features file
+      - name: Archive
+        run: tar -czf climg2base64-linux-aarch64.tar.gz -C target/release climg2base64
+      - uses: actions/upload-artifact@v4
+        with:
+          name: climg2base64-linux-aarch64
+          path: climg2base64-linux-aarch64.tar.gz
+
+  build-windows-x86_64:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - name: Build
+        run: cargo build --release --features file
+      - name: Archive
+        run: tar -czf climg2base64-windows-x86_64.tar.gz -C target/release climg2base64.exe
+      - uses: actions/upload-artifact@v4
+        with:
+          name: climg2base64-windows-x86_64
+          path: climg2base64-windows-x86_64.tar.gz
+
+  build-windows-aarch64:
+    runs-on: windows-11-arm
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - name: Build
+        run: cargo build --release --features file
+      - name: Archive
+        run: tar -czf climg2base64-windows-aarch64.tar.gz -C target/release climg2base64.exe
+      - uses: actions/upload-artifact@v4
+        with:
+          name: climg2base64-windows-aarch64
+          path: climg2base64-windows-aarch64.tar.gz
+
+  build-macos-aarch64:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - name: Build
+        run: cargo build --release --features file
+      - name: Archive
+        run: tar -czf climg2base64-macos-aarch64.tar.gz -C target/release climg2base64
+      - uses: actions/upload-artifact@v4
+        with:
+          name: climg2base64-macos-aarch64
+          path: climg2base64-macos-aarch64.tar.gz
+
+  release:
+    needs:
+      - build-linux-x86_64
+      - build-linux-aarch64
+      - build-windows-x86_64
+      - build-windows-aarch64
+      - build-macos-aarch64
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          merge-multiple: true
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: '*.tar.gz'
