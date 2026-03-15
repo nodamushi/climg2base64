@@ -53,8 +53,9 @@ This project is licensed under either the MIT License or the Unlicense, at your 
 - v0.3.0
   - Fix exit code: clipboard initialization failure now returns code 4 (was 3, duplicate of image creation failure)
   - Library updates
-- v0.2.0
   - Add pre-built binaries via GitHub Actions for Linux (x86_64, aarch64), Windows (x86_64, aarch64), macOS (aarch64)
+- v0.2.0
+  - Fix #3
 - v0.1.1: Fix #2
   - If PNG clipboard data is exists on Windows, use it.
 - v0.1.0: first release
