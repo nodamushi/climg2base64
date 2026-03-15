@@ -17,11 +17,13 @@ jobs:
       - name: Build
         run: cargo build --release --features file
       - name: Archive
-        run: tar -czf climg2base64-linux-x86_64.tar.gz -C target/release climg2base64
+        run: |
+          tar -czf climg2base64-linux-x86_64.tar.gz -C target/release climg2base64
+          sha256sum climg2base64-linux-x86_64.tar.gz > climg2base64-linux-x86_64.tar.gz.sha256
       - uses: actions/upload-artifact@v4
         with:
           name: climg2base64-linux-x86_64
-          path: climg2base64-linux-x86_64.tar.gz
+          path: climg2base64-linux-x86_64.tar.gz*
 
   build-linux-aarch64:
     runs-on: ubuntu-24.04-arm
@@ -34,11 +36,13 @@ jobs:
       - name: Build
         run: cargo build --release --features file
       - name: Archive
-        run: tar -czf climg2base64-linux-aarch64.tar.gz -C target/release climg2base64
+        run: |
+          tar -czf climg2base64-linux-aarch64.tar.gz -C target/release climg2base64
+          sha256sum climg2base64-linux-aarch64.tar.gz > climg2base64-linux-aarch64.tar.gz.sha256
       - uses: actions/upload-artifact@v4
         with:
           name: climg2base64-linux-aarch64
-          path: climg2base64-linux-aarch64.tar.gz
+          path: climg2base64-linux-aarch64.tar.gz*
 
   build-windows-x86_64:
     runs-on: windows-latest
@@ -49,11 +53,14 @@ jobs:
       - name: Build
         run: cargo build --release --features file
       - name: Archive
-        run: tar -czf climg2base64-windows-x86_64.tar.gz -C target/release climg2base64.exe
+        shell: bash
+        run: |
+          tar -czf climg2base64-windows-x86_64.tar.gz -C target/release climg2base64.exe
+          sha256sum climg2base64-windows-x86_64.tar.gz > climg2base64-windows-x86_64.tar.gz.sha256
       - uses: actions/upload-artifact@v4
         with:
           name: climg2base64-windows-x86_64
-          path: climg2base64-windows-x86_64.tar.gz
+          path: climg2base64-windows-x86_64.tar.gz*
 
   build-windows-aarch64:
     runs-on: windows-11-arm
@@ -64,11 +71,14 @@ jobs:
       - name: Build
         run: cargo build --release --features file
       - name: Archive
-        run: tar -czf climg2base64-windows-aarch64.tar.gz -C target/release climg2base64.exe
+        shell: bash
+        run: |
+          tar -czf climg2base64-windows-aarch64.tar.gz -C target/release climg2base64.exe
+          sha256sum climg2base64-windows-aarch64.tar.gz > climg2base64-windows-aarch64.tar.gz.sha256
       - uses: actions/upload-artifact@v4
         with:
           name: climg2base64-windows-aarch64
-          path: climg2base64-windows-aarch64.tar.gz
+          path: climg2base64-windows-aarch64.tar.gz*
 
   build-macos-aarch64:
     runs-on: macos-latest
@@ -79,11 +89,13 @@ jobs:
       - name: Build
         run: cargo build --release --features file
       - name: Archive
-        run: tar -czf climg2base64-macos-aarch64.tar.gz -C target/release climg2base64
+        run: |
+          tar -czf climg2base64-macos-aarch64.tar.gz -C target/release climg2base64
+          shasum -a 256 climg2base64-macos-aarch64.tar.gz > climg2base64-macos-aarch64.tar.gz.sha256
       - uses: actions/upload-artifact@v4
         with:
           name: climg2base64-macos-aarch64
-          path: climg2base64-macos-aarch64.tar.gz
+          path: climg2base64-macos-aarch64.tar.gz*
 
   release:
     needs:
@@ -99,6 +111,15 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           merge-multiple: true
+      - name: Create sha256sums.txt and job summary
+        run: |
+          cat *.sha256 > sha256sums.txt
+          echo '## SHA256 Checksums' >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          cat sha256sums.txt >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
       - uses: softprops/action-gh-release@v2
         with:
-          files: '*.tar.gz'
+          files: |
+            *.tar.gz
+            sha256sums.txt
